@@ -32,15 +32,15 @@ function FileVersionsList(props) {
     </div>
   ));
 }
+
 function FileVersions() {
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const apiUrl = process.env.REACT_APP_API_URL;
   console.log(data);
 
   useEffect(() => {
-    // fetch data
-    console.log();
     const dataFetch = async () => {
       const token = localStorage.getItem("token");
       const response = await fetch(`${apiUrl}file_versions`, {
@@ -53,9 +53,10 @@ function FileVersions() {
       if (response.ok) {
         const data = await response.json();
         setData(data);
+        setLoading(false);
       } else {
-        // handle error
         console.error("Failed to fetch file versions");
+        setLoading(false);
       }
     };
 
@@ -65,6 +66,7 @@ function FileVersions() {
   const handleUploadClick = () => {
     navigate("/upload");
   };
+
   return (
     <div className="d-flex flex-column">
       <h1>Found {data.length} File Versions</h1>
@@ -77,9 +79,13 @@ function FileVersions() {
       </Link>
 
       <br />
-      <div>
-        <FileVersionsList file_versions={data} />
-      </div>
+      {loading ? (
+        <div>Loading...</div>
+      ) : (
+        <div>
+          <FileVersionsList file_versions={data} />
+        </div>
+      )}
     </div>
   );
 }
