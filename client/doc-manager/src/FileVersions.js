@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import FileDownload from "./FileDownload";
 
 import "./FileVersions.css";
 
@@ -6,35 +8,71 @@ function FileVersionsList(props) {
   const file_versions = props.file_versions;
   return file_versions.map((file_version) => (
     <div className="file-version" key={file_version.id}>
-      <h2>File Name: {file_version.file_name}</h2>
+      <h2>
+        File Name:{" "}
+        {file_version.file_name + "." + file_version.file.split(".").pop()}
+      </h2>
       <p>
         ID: {file_version.id} Version: {file_version.version_number}
       </p>
+      <div>
+        {/* Use the FileDownload component with appropriate props */}
+        <FileDownload
+          file_name={file_version.file_name}
+          version_number={file_version.version_number}
+          path={
+            file_version.url +
+            "" +
+            file_version.file_name +
+            "." +
+            file_version.file.split(".").pop()
+          }
+        />
+      </div>
     </div>
   ));
 }
 function FileVersions() {
   const [data, setData] = useState([]);
+  const navigate = useNavigate();
+
   console.log(data);
 
   useEffect(() => {
     // fetch data
     const dataFetch = async () => {
-      const data = await (
-        await fetch("http://localhost:8001/api/file_versions")
-      ).json();
+      const token = localStorage.getItem("token");
+      const response = await fetch("http://localhost:8001/api/file_versions", {
+        headers: {
+          Authorization: `Token ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
 
-      // set state when the data received
-      setData(data);
+      if (response.ok) {
+        const data = await response.json();
+        setData(data);
+      } else {
+        // handle error
+        console.error("Failed to fetch file versions");
+      }
     };
 
     dataFetch();
   }, []);
+
+  const handleUploadClick = () => {
+    navigate("/upload");
+  };
   return (
-    <div>
+    <div className="d-flex flex-column">
       <h1>Found {data.length} File Versions</h1>
+      <button onClick={handleUploadClick} className="btn btn-primary">
+        Upload File
+      </button>
+      <br />
       <div>
-        <FileVersionsList file_versions={data} />h
+        <FileVersionsList file_versions={data} />
       </div>
     </div>
   );
