@@ -25,6 +25,9 @@ class User(AbstractUser):
 
     objects = UserManager()
 
+    # class Meta:
+    #     app_label = 'users'
+
     def get_absolute_url(self) -> str:
         """Get URL for user's detail view.
 

@@ -7,7 +7,7 @@ from django.http import FileResponse
 from hashlib import sha256
 from datetime import datetime
 
-from file_versions.models import FileVersion
+from propylon_document_manager.file_versions.models import FileVersion
 from .serializers import FileVersionSerializer
 
 class FileUploadView(viewsets.ViewSet):
@@ -92,10 +92,20 @@ class RetrieveFileByHash(APIView):
         except FileVersion.DoesNotExist:
             return Response({'error': 'File not found'}, status=status.HTTP_404_NOT_FOUND)
 
-class FileVersionViewSet(viewsets.ModelViewSet):
+# class FileVersionViewSet(viewsets.ModelViewSet):
+#     authentication_classes = [authentication.TokenAuthentication]
+#     permission_classes = [permissions.IsAuthenticated]
+#     serializer_class = FileVersionSerializer
+
+#     def get_queryset(self):
+#         return FileVersion.objects.all()
+
+class FileVersionAPIView(APIView):
     authentication_classes = [authentication.TokenAuthentication]
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = FileVersionSerializer
 
-    def get_queryset(self):
-        return FileVersion.objects.all()
+    def get(self, request, format=None):
+        file_versions = FileVersion.objects.filter(user=request.user_id)
+        serializer = self.serializer_class(file_versions, many=True)
+        return Response(serializer.data)

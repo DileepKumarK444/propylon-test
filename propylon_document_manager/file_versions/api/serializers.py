@@ -1,6 +1,6 @@
 # from rest_framework import serializers
 
-from file_versions.models import FileVersion
+from propylon_document_manager.file_versions.models import FileVersion
 from rest_framework import serializers
 class FileVersionSerializer(serializers.ModelSerializer):
     class Meta:
