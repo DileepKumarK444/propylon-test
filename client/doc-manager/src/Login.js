@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+const apiUrlLogin = process.env.REACT_APP_API_URL_LOGIN;
 
 const Login = ({ onLogin }) => {
   const [username, setUsername] = useState("");
@@ -18,7 +19,7 @@ const Login = ({ onLogin }) => {
     event.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:8001/auth-token/", {
+      const response = await fetch(`${apiUrlLogin}auth-token/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

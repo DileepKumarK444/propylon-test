@@ -35,14 +35,15 @@ function FileVersionsList(props) {
 function FileVersions() {
   const [data, setData] = useState([]);
   const navigate = useNavigate();
-
+  const apiUrl = process.env.REACT_APP_API_URL;
   console.log(data);
 
   useEffect(() => {
     // fetch data
+    console.log();
     const dataFetch = async () => {
       const token = localStorage.getItem("token");
-      const response = await fetch("http://localhost:8001/api/file_versions", {
+      const response = await fetch(`${apiUrl}file_versions`, {
         headers: {
           Authorization: `Token ${token}`,
           "Content-Type": "application/json",

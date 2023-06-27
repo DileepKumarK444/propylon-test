@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+const apiUrl = process.env.REACT_APP_API_URL;
+
 async function uploadFile(file, fileName, url) {
   const formData = new FormData();
   formData.append("file", file);
@@ -9,7 +11,7 @@ async function uploadFile(file, fileName, url) {
 
   try {
     const token = localStorage.getItem("token");
-    const response = await fetch("http://localhost:8001/api/file_upload/", {
+    const response = await fetch(`${apiUrl}file_upload/`, {
       method: "POST",
       body: formData,
       headers: {

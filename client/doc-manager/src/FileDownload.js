@@ -1,18 +1,17 @@
 import React, { useEffect, useState } from "react";
 
+const apiUrl = process.env.REACT_APP_API_URL;
+
 const FileDownload = ({ file_name, version_number, path }) => {
   const [fileUrl, setFileUrl] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    fetch(
-      `http://localhost:8001/api/file/${file_name}/version/${version_number}/`,
-      {
-        headers: {
-          Authorization: `Token ${token}`,
-        },
-      }
-    )
+    fetch(`${apiUrl}file/${file_name}/version/${version_number}/`, {
+      headers: {
+        Authorization: `Token ${token}`,
+      },
+    })
       .then((response) => response.blob())
       .then((blob) => {
         const fileUrl = URL.createObjectURL(blob);
