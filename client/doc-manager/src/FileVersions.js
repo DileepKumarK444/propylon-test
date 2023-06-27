@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import FileDownload from "./FileDownload";
 
 import "./FileVersions.css";
@@ -71,6 +71,11 @@ function FileVersions() {
       <button onClick={handleUploadClick} className="btn btn-primary">
         Upload File
       </button>
+      <br />
+      <Link to="hash" className="btn btn-primary">
+        Download using hash
+      </Link>
+
       <br />
       <div>
         <FileVersionsList file_versions={data} />

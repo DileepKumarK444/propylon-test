@@ -23,6 +23,7 @@ import {
 import FileVersions from "./FileVersions";
 import FileUpload from "./FileUploader";
 import Login from "./Login";
+import RetrieveFileByHash from "./RetrieveFileByHash";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(
@@ -59,6 +60,11 @@ function App() {
         <Route
           path="/upload"
           element={<ProtectedRoute element={<FileUpload />} />}
+        />
+
+        <Route
+          path="/hash"
+          element={<ProtectedRoute element={<RetrieveFileByHash />} />}
         />
       </Routes>
       {isAuthenticated ? (
