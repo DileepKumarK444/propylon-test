@@ -15,6 +15,7 @@ const FileDownload = ({ file_name, version_number, path }) => {
       .then((response) => response.blob())
       .then((blob) => {
         const fileUrl = URL.createObjectURL(blob);
+        console.log(fileUrl);
         setFileUrl(fileUrl);
       })
       .catch((error) => {
@@ -30,13 +31,32 @@ const FileDownload = ({ file_name, version_number, path }) => {
     };
   }, [file_name, version_number]);
 
+  const handleFileDownload = () => {
+    if (fileUrl) {
+      const link = document.createElement("a");
+      link.href = fileUrl;
+      const fileNameWithExtension = file_name + getExtensionFromPath(path); // Add the file extension
+      link.setAttribute("download", fileNameWithExtension);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  };
+
+  const getExtensionFromPath = (path) => {
+    return path.substring(path.lastIndexOf("."));
+  };
   return (
     <div>
       {/* <h1>File Download: {file_name}</h1> */}
       {fileUrl && (
-        <a href={fileUrl} download>
+        <button
+          className="btn btn-primary col-sm-12"
+          onClick={handleFileDownload}
+          download
+        >
           {path}
-        </a>
+        </button>
       )}
     </div>
   );
