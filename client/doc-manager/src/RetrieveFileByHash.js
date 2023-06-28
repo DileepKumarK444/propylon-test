@@ -6,6 +6,7 @@ const apiUrl = process.env.REACT_APP_API_URL;
 const RetrieveFileByHash = () => {
   const [fileHash, setFileHash] = useState("");
   const [fileURL, setFileURL] = useState(null);
+  const [fileName, setFileName] = useState(null);
   const navigate = useNavigate();
 
   const handleInputChange = (event) => {
@@ -19,32 +20,33 @@ const RetrieveFileByHash = () => {
       const response = await fetch(`${apiUrl}file/${fileHash}`, {
         headers: {
           Authorization: `Token ${token}`,
-          //   "Content-Type": "application/json",
         },
-      })
-        .then((response) => response.blob())
-        .then((blob) => {
-          const fileUrl = URL.createObjectURL(blob);
-          setFileURL(fileUrl);
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-          // Handle the error appropriately
-        });
+      });
+      const header = response.headers.get("content-disposition");
+      const blob = await response.blob();
+      const parts = header.split("=");
+      var filename = "sample";
+      if (parts.length === 2) {
+        var filename = parts[1].replace(/"/g, "").trim();
+      }
+      const fileUrl = URL.createObjectURL(blob);
+
+      // Create a link element and simulate a click to initiate the download
+      const link = document.createElement("a");
+      link.href = fileUrl;
+      link.download = filename;
+      link.click();
+
+      // Clean up the temporary URL
+      URL.revokeObjectURL(fileUrl);
     } catch (error) {
       console.error(error);
     }
   };
+
   const handleBack = () => {
     navigate("/");
   };
-  useEffect(() => {
-    if (fileURL) {
-      const link = document.createElement("a");
-      link.href = fileURL;
-      link.click();
-    }
-  }, [fileURL]);
 
   return (
     <div className="d-flex flex-column">

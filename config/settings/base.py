@@ -307,3 +307,8 @@ SPECTACULAR_SETTINGS = {
 # Your stuff...
 # ------------------------------------------------------------------------------
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+CORS_ALLOWED_HEADERS = [
+    'X-File-Name',
+    # Other allowed headers...
+]

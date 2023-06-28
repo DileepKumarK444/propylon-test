@@ -6,7 +6,7 @@ from rest_framework import authentication, permissions, viewsets
 from django.http import FileResponse
 from hashlib import sha256
 from datetime import datetime
-
+import os
 from propylon_document_manager.file_versions.models import FileVersion
 from .serializers import FileVersionSerializer
 
@@ -77,6 +77,8 @@ class FileRetrieveView(APIView):
         except FileVersion.DoesNotExist:
             return Response({'error': 'File not found'}, status=status.HTTP_404_NOT_FOUND)
 
+
+
 class RetrieveFileByHash(APIView):
     authentication_classes = [authentication.TokenAuthentication]
     permission_classes = [permissions.IsAuthenticated]
@@ -85,12 +87,15 @@ class RetrieveFileByHash(APIView):
         try:
             file_version = FileVersion.objects.get(file_hash=file_hash)
             file_path = file_version.file.path
-            file_name = file_version.file_name
-
+            file_name = os.path.basename(str(file_version.file))
             response = FileResponse(open(file_path, 'rb'), as_attachment=True, filename=file_name)
+
+            response["Access-Control-Expose-Headers"] = "Content-Disposition"
+
             return response
         except FileVersion.DoesNotExist:
             return Response({'error': 'File not found'}, status=status.HTTP_404_NOT_FOUND)
+
 
 # class FileVersionViewSet(viewsets.ModelViewSet):
 #     authentication_classes = [authentication.TokenAuthentication]
